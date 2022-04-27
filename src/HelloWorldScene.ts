@@ -1,6 +1,9 @@
 import Phaser from "phaser";
 
 export default class HelloWorldScene extends Phaser.Scene {
+  cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
+  player!: Phaser.Types.Physics.Arcade.ImageWithDynamicBody;
+
   constructor() {
     super("hello-world");
   }
@@ -12,7 +15,7 @@ export default class HelloWorldScene extends Phaser.Scene {
   }
 
   create() {
-    this.add.image(400, 300, "sky");
+    this.add.image(512, 384, "sky");
 
     const particles = this.add.particles("red");
 
@@ -22,12 +25,29 @@ export default class HelloWorldScene extends Phaser.Scene {
       blendMode: "ADD",
     });
 
-    const player = this.physics.add.image(400, 100, "player");
+    this.player = this.physics.add.image(400, 100, "player");
 
-    player.setVelocity(100, 200);
-    player.setBounce(1, 1);
-    player.setCollideWorldBounds(true);
+    this.player.setBounce(1, 1);
+    this.player.setCollideWorldBounds(true);
 
-    emitter.startFollow(player);
+    emitter.startFollow(this.player);
+
+    this.cursors = this.input.keyboard.createCursorKeys();
+  }
+
+  update() {
+    this.player.setVelocity(0, 0);
+    if (this.cursors.up.isDown) {
+      this.player.setVelocityY(-300);
+    }
+    if (this.cursors.down.isDown) {
+      this.player.setVelocityY(300);
+    }
+    if (this.cursors.left.isDown) {
+      this.player.setVelocityX(-300);
+    }
+    if (this.cursors.right.isDown) {
+      this.player.setVelocityX(300);
+    }
   }
 }
